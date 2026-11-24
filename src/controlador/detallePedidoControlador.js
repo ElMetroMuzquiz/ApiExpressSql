@@ -156,6 +156,29 @@ class DetallePedidoControlador {
             });
         }
     }
+    static async obtenerPorPedido(req, res) {
+    try {
+        const id = Number(req.params.id);
+
+        if (!Number.isInteger(id) || id <= 0) {
+            return res.status(400).json({
+                mensaje: 'ID de pedido inválido'
+            });
+        }
+
+        const datos = await DetallePedidoModelo.obtenerPorPedido(id);
+
+        res.status(200).json({
+            exito: true,
+            datos
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            mensaje: 'Error al consultar detalles del pedido'
+        });
+    }
+}
 
     static async ventasPorProducto(req, res) {
         try {

@@ -70,6 +70,23 @@ class DetallePedidoModelo {
         return result.affectedRows;
     }
 
+    static async obtenerPorPedido(id_pedido) {
+    const [rows] = await pool.query(`
+        SELECT d.id_detalle, d.id_pedido,
+               d.id_producto, p.nombre AS producto,
+               d.cantidad, d.precio,
+               (d.cantidad * d.precio) AS subtotal
+        FROM detalle_pedido d
+        INNER JOIN productos p
+            ON d.id_producto = p.id_producto
+        INNER JOIN pedidos pe
+            ON d.id_pedido = pe.id_pedido
+        WHERE d.id_pedido = ?
+    `, [id_pedido]);
+
+    return rows;
+}
+
     static async obtenerVentasPorProducto() {
         const [rows] = await pool.query(`
             SELECT p.id_producto,
